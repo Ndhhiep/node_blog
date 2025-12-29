@@ -15,9 +15,22 @@
     "express": "^5.2.1",
     "express-handlebars": "^8.0.3"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{js,json,scss}": [
+      "prettier --single-quote --trailing-comma all --tab-width 4 --write"
+    ]
+  },
   "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
     "morgan": "^1.10.1",
     "nodemon": "^3.1.11",
+    "prettier": "^3.7.4",
     "sass": "^1.97.1"
   }
 }
