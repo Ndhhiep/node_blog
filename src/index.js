@@ -17,7 +17,7 @@ app.use(express.json());
 
 // Template engine
 app.set('views', path.join(__dirname, 'resources/views'));
-                    app.engine(
+app.engine(
     'hbs',
     handlebars.engine({
         extname: '.hbs',
