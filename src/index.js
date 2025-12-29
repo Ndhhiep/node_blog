@@ -4,11 +4,18 @@ const path = require('path')
 const handlebars = require('express-handlebars')
 
 const app = express()
-const port = 3000
+const port = 5000
+
+const route = require('./routes')
+
+
 
 app.use(express.static(path.join(__dirname, 'public')))
 // Http logger
 app.use(morgan('combined'))
+
+app.use(express.urlencoded({ extended: true }))
+app.use(express.json())
 
 // Template engine
 app.set('views', path.join(__dirname, 'resources/views'))
@@ -17,14 +24,12 @@ app.engine('hbs', handlebars.engine({
 }))
 app.set('view engine', 'hbs')
 
-app.get('/', (req, res) => {
-    res.render('home')
-})
 
-app.get('/news', (req, res) => {
-    res.render('news')
-})
+route(app)
 
+app.use((req, res) => {
+    res.status(404).send(`Not Found: ${req.method} ${req.originalUrl}`);
+});
 
 app.listen(port, () => {
     console.log(`Example app listening on port http://localhost:${port}`)
