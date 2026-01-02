@@ -1,12 +1,21 @@
-class SiteController {
-    // [GET] /news
-    index(req, res) {
-        res.render('home');
-    }
+import Course from '../models/Course.js';
+import { multipleMongooseToObject } from '../../util/mongoose.js';
 
-    search(req, res) {
-        res.render('search');
-    }
+class SiteController {
+  // [GET] /news
+  async index(req, res, next) {
+    Course.find({})
+      .then((courses) => {
+        res.render('home', {
+          courses: multipleMongooseToObject(courses),
+        });
+      })
+      .catch(next);
+  }
+
+  search(req, res) {
+    res.render('search');
+  }
 }
 
-module.exports = new SiteController();
+export default new SiteController();
