@@ -1,0 +1,160 @@
+<div class='mt-4'>
+  <h1>My Trash Courses</h1>
+  <table class='table'>
+    <thead>
+      <tr>
+        <th scope='col'>ID</th>
+        <th scope='col'>Name</th>
+        <th scope='col'>Level</th>
+        <th scope='col'>Created Time</th>
+        <th scope='col'></th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each courses}}
+        <tr>
+          <th scope='row'>{{sum @index 1}}</th>
+          <td>{{this.name}}</td>
+          <td>{{this.level}}</td>
+          <td>{{formatDate this.createdAt}}</td>
+          <td>
+            <a
+              href=''
+              class='btn btn-warning btn-restore'
+              data-bs-id='{{this._id}}'
+              data-bs-toggle='modal'
+              data-bs-target='#confirmRestoreModal'
+            >Restore</a>
+
+            <a
+              href=''
+              type='submit'
+              class='btn btn-danger'
+              data-bs-id='{{this._id}}'
+              data-bs-toggle='modal'
+              data-bs-target='#confirmDeleteModal'
+            >Delete</a>
+          </td>
+        </tr>
+      {{else}}
+        <tr>
+          <td colspan='5' class='text-center'>
+            No trash courses found !
+            <a href='/me/stored/courses'>Return.</a>
+          </td>
+
+        </tr>
+
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+
+{{! Confirm delete modal }}
+
+<div class='modal' id='confirmDeleteModal' tabindex='-1'>
+  <div class='modal-dialog modal-dialog-centered'>
+    <div class='modal-content'>
+      <div class='modal-header'>
+        <h5 class='modal-title'>Delete Forever! This Action Cannot Be Undone!</h5>
+        <button
+          type='button'
+          class='btn-close'
+          data-bs-dismiss='modal'
+          aria-label='Close'
+        ></button>
+      </div>
+      <div class='modal-body'>
+        <p>Are you sure to delete this course forever?</p>
+      </div>
+      <div class='modal-footer'>
+
+        <button
+          type='button'
+          id='btn-delete-confirmed'
+          class='btn btn-danger'
+        >Delete Confirmed</button>
+
+        <button
+          type='button'
+          class='btn btn-secondary'
+          data-bs-dismiss='modal'
+        >Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{! Confirm restore modal }}
+<div class='modal' id='confirmRestoreModal' tabindex='-1'>
+  <div class='modal-dialog'>
+    <div class='modal-content'>
+      <div class='modal-header'>
+        <h5 class='modal-title'>Restore Course</h5>
+        <button
+          type='button'
+          class='btn-close'
+          data-bs-dismiss='modal'
+          aria-label='Close'
+        ></button>
+      </div>
+      <div class='modal-body'>
+        <p>Are you sure you want to restore this course?</p>
+      </div>
+      <div class='modal-footer'>
+
+        <button
+          type='button'
+          id='btn-restore-confirmed'
+          class='btn btn-primary'
+        >Restore Confirmed</button>
+
+        <button
+          type='button'
+          class='btn btn-secondary'
+          data-bs-dismiss='modal'
+        >Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{! Hidden Delete Form }}
+<form name='delete-course-form' method='POST' style='display: none;'></form>
+
+{{! Hidden Restore Form }}
+<form name='restore-course-form' method='POST' style='display: none;'></form>
+
+{{!-- Logic --}}
+<script>
+  var courseId; var deleteCourseForm = document.forms['delete-course-form']; 
+  var btnDeleteCourse = document.getElementById('btn-delete-confirmed'); 
+  var confirmDeleteModal = document.getElementById('confirmDeleteModal'); 
+  var restoreBtns = document.querySelectorAll('.btn-restore');
+
+  confirmDeleteModal.addEventListener('show.bs.modal', function (event) { 
+    // Nút Delete đã kích hoạt modal 
+    var button = event.relatedTarget; 
+    courseId = button.getAttribute('data-bs-id');
+  });
+
+  btnDeleteCourse.addEventListener('click', function () {
+    deleteCourseForm.action = '/courses/' + courseId + '/force?_method=DELETE';
+    deleteCourseForm.submit();
+  });
+
+  var restoreCourseForm = document.forms['restore-course-form'];
+  var btnRestoreCourse = document.getElementById('btn-restore-confirmed'); 
+  var confirmRestoreModal = document.getElementById('confirmRestoreModal');
+
+  confirmRestoreModal.addEventListener('show.bs.modal', function (event) { 
+    // Nút Restore đã kích hoạt modal
+    var button = event.relatedTarget; 
+    courseId = button.getAttribute('data-bs-id'); 
+  });
+
+  btnRestoreCourse.addEventListener('click', function () {
+    restoreCourseForm.action = '/courses/' + courseId + '/restore?_method=PATCH';
+    restoreCourseForm.submit();
+  });
+</script>
