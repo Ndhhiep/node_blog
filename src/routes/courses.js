@@ -3,6 +3,7 @@ const router = express.Router();
 
 import coursesController from '../app/controllers/CourseController.js';
 
+router.post('/handle-form-action', coursesController.handleFormAction);
 router.get('/create', coursesController.create);
 router.post('/store', coursesController.store);
 router.get('/:id/edit', coursesController.edit);
